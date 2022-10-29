@@ -10,21 +10,23 @@ class MyAccountManager(BaseUserManager):
         user = self.model(
             email=self.normalize_email(email),
             hospital_name=hospital_name,
-            district=district,
-            city=city,
+            district_id=district,
+            city_id=city,
             phone=phone)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, hospital_name, district, city,email, phone, password):
+    def create_superuser(self, hospital_name,email, password,district,city,phone):
         user = self.create_user(
             email=self.normalize_email(email),
             hospital_name=hospital_name,
             password=password,
             district=district,
             city=city,
-            phone=phone,
+            phone=phone
+          
+        
         )
         user.is_admin = True
         user.is_active = True
@@ -50,11 +52,11 @@ class City(models.Model):
 
 
 class Hospital(AbstractBaseUser):
-    hospital_name = models.CharField(max_length=50)
-    district = models.ForeignKey(District, on_delete=models.CASCADE)
-    city = models.ForeignKey(City, on_delete=models.CASCADE)
-    email = models.EmailField(max_length=30, unique=True)
-    phone = models.CharField(max_length=10, unique=True)
+    hospital_name = models.CharField(max_length=50,blank=True,null=True)
+    district = models.ForeignKey(District, on_delete=models.CASCADE,blank=True,null=True)
+    city = models.ForeignKey(City, on_delete=models.CASCADE,blank=True,null=True)
+    email = models.EmailField(max_length=30, unique=True,blank=True,null=True)
+    phone = models.CharField(max_length=10, blank=True,null=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
@@ -63,7 +65,7 @@ class Hospital(AbstractBaseUser):
     is_superuser = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'phone']
+    REQUIRED_FIELDS = ['hospital_name','city','district','phone']
 
     objects = MyAccountManager()
 
