@@ -20,6 +20,8 @@ class Token(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
+    modified=models.DateTimeField(auto_now=True)
+    called=models.BooleanField(default=False)
 
     def __str__(self):
         return self.patient.name
